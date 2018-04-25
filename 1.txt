@@ -1,0 +1,37 @@
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from xgboost import plot_importance
+from matplotlib import pyplot
+
+#Col9 (xls) Criando variáveis por canal (F e NF)
+df['x_c1a_can_ib'] = np.maximum(df.x_c1a_can_ib_f, df.x_c1a_can_ib_nf)
+df['x_c1a_can_ff'] = np.maximum(df.x_c1a_can_ff_f, df.x_c1a_can_ff_nf)
+df['x_c1a_can_mb'] = np.maximum(df.x_c1a_can_mb_f, df.x_c1a_can_mb_nf)
+df['x_c1a_can_aa'] = np.maximum(df.x_c1a_can_aa_f, df.x_c1a_can_aa_nf)
+
+train_cols_xgb = ["x_q1m_bh1_0_4_f", "x_q1m_bh1_0_4_nf", "x_q1m_bh1_4_8_f", "x_q1m_bh1_4_8_nf", "x_q1m_bh1_8_12_f", "x_q1m_bh1_8_12_nf", "x_q1m_bh1_12_16_f", "x_q1m_bh1_12_16_nf", "x_q1m_bh1_16_20_f", "x_q1m_bh1_16_20_nf", "x_q1m_bh1_20_24_f", "x_q1m_bh1_20_24_nf", "faixa_idade_0_20", "faixa_idade_21_30", "faixa_idade_31_40", "faixa_idade_41_50", "faixa_idade_51_60", "faixa_idade_61_70", "faixa_idade_71_80", "idade_conta", "is_classic", "is_exclusive", "mais_de_uma", "x_c1a_can_aa", "x_c1a_can_ib", "x_c1a_can_mb", "x_renc_negativo", "x_renc_q3", "x_renc_q4", "x_tmqinvestim_1m_q2", "x_tmqinvestim_1m_q3", "x_tmqinvestim_1m_q4", "x_tmqlime1a_c_q1", "x_tmqlime1a_c_q2", "x_tmqlime1a_c_q3", "x_tmqlime1a_c_q4", "x_tmqsaques_aa_1m_q2", "x_tmqsaques_aa_1m_q3", "x_tmqsaques_aa_1m_q4", "x_q1m_fim_semana_f", "x_q1m_fim_semana_nf", "x_reg_co", "x_reg_n", "x_reg_s", "x_reg_se"]
+train_cols_y = ["y_c1m"]
+#train_cols_y = ["y_c1m_aa_bh1_08_20_f", "y_c1m_aa_bh1_4_8_e_20_24_f"]
+
+-----------------------------------
+
+# Dividindo a base em Treino e Teste
+seed = 1
+test_size = 0.33
+X_train_xgb, X_test_xgb, y_train_xgb, y_test_xgb = train_test_split(df[train_cols_xgb], df[train_cols_y], test_size=test_size, random_state=seed)
+
+--------------------------------------
+
+#Ajustando o modelo na base Treino
+import xgboost
+result_xgb2 = xgboost.XGBClassifier()
+result_xgb2.fit(X_train_xgb, y_train_xgb)
+#xgb2 = XGBClassifier()
+#result_xgb2 = xgb2.fit(X_train_xgb, y_train_xgb)
+print(result_xgb2)
+
+----------------------------------------
+
+plot_importance(result_xgb2)
+pyplot.show()
